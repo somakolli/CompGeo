@@ -4,6 +4,22 @@ from sympy.geometry import Point, Segment
 from tkinter import Tk, Canvas
 
 
+class Vec2D:
+
+    def __init__(self, tuple):
+        self.tuple = tuple
+        self.x, self.y = tuple
+
+    def __add__(self, other):
+        return Vec2D((self.x + other.x, self.y + other.y))
+
+    def __sub__(self, other):
+        return Vec2D((self.x - other.x, self.y - other.y))
+
+    def det(self, other):
+        return self.x * other.y - self.y * other.x
+
+
 class Model:
 
     def __init__(self):
@@ -20,11 +36,9 @@ class Model:
     @staticmethod
     def is_right_of_line(point, segment):
         p, q = segment
-        x1, y1 = p
-        x2, y2 = q
-        x, y = point
-        primitive = (x - x1) * (y2 - y1) - (y - y1) * (x2 - x1)
-        return primitive > 0
+        vec_pq = Vec2D(q) - Vec2D(p)
+        vec_ppoint = Vec2D(point) - Vec2D(p)
+        return vec_pq.det(vec_ppoint) > 0
 
     def calc_ch(self):
         self.segments = []
@@ -44,17 +58,17 @@ class Model:
                 i = i+1
                 q = self.points[i]
             for point in self.points:
-                x, y = point
                 if self.is_right_of_line(point, (p, q)):
                     q = point
             self.segments.append((p, q))
             p = q
+
     def clear(self):
         self.points = []
         self.segments = []
 
     def __str__(self):
-        return f"Model: {self.points}, lowest_point: {self.lowest_point()}"
+        return f"Model: {self.points}, lowest_point: {self.lowest_point()}, ch: {self.segments}"
 
 
 class View:

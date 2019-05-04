@@ -16,7 +16,7 @@ class Vec2D:
     def __sub__(self, other):
         return Vec2D((self.x - other.x, self.y - other.y))
 
-    def det(self, other):
+    def cross(self, other):
         return self.x * other.y - self.y * other.x
 
 
@@ -38,7 +38,7 @@ class Model:
         p, q = segment
         vec_pq = Vec2D(q) - Vec2D(p)
         vec_ppoint = Vec2D(point) - Vec2D(p)
-        return vec_pq.det(vec_ppoint) > 0
+        return vec_pq.cross(vec_ppoint) > 0
 
     def calc_ch(self):
         self.segments = []
